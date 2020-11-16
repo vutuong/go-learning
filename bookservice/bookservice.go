@@ -1,6 +1,7 @@
 package bookservice
 
 import (
+	"bytes"
 	"net/http"
 
 	"github.com/emicklei/go-restful"
@@ -11,6 +12,18 @@ type Book struct {
 	ID     string
 	Title  string
 	Author string
+}
+
+func init() {
+	restful.MarshalIndent = func(v interface{}, prefix, indent string) ([]byte, error) {
+		var buf bytes.Buffer
+		encoder := restful.NewEncoder(&buf)
+		encoder.SetIndent(prefix, indent)
+		if err := encoder.Encode(v); err != nil {
+			return nil, err
+		}
+		return buf.Bytes(), nil
+	}
 }
 
 // NewAPIServer Function New create a new API specification of the Webservice
