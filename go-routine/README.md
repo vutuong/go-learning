@@ -41,6 +41,13 @@ for l := range c {
     go checkLink(l, c)
 }
 ```
+- Tạo một anonymous function để chạy trong go-routine trong trường hợp ta chỉ cần chạy 1 lần mà ko muốn tạo một official function:
+```
+// Anonymous go routine
+go func() {
+ fmt.Println("I'm running in my own go routine")
+}()
+```
 
 
 
