@@ -38,8 +38,8 @@ Có thể coi một channel là một thiết bị 2 chiều
 - Vòng lặp chờ cho channel trả lại giá trị:
 ```
 for l := range c {
-        go checkLink(l, c)
-    }
+    go checkLink(l, c)
+}
 ```
 
 
