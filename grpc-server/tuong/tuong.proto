@@ -1,0 +1,10 @@
+syntax = "proto3";
+package tuong;
+
+message Message {
+	string body =1;
+}
+
+service TuongService {
+	rpc SayHello(Message) returns (Message) {}
+}
