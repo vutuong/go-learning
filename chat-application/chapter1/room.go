@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 
+	"chatApp/trace"
+
 	"github.com/gorilla/websocket"
 )
 
@@ -18,6 +20,9 @@ type room struct {
 	leave chan *client
 	// clients lưu trữ toàn bộ clients trong room này
 	clients map[*client]bool
+	// tracer will receive trace information of activity
+	// in the room.
+	tracer trace.Tracer
 }
 
 // khởi tạo room bao gồm các channel và map
@@ -27,6 +32,7 @@ func newRoom() *room {
 		join:    make(chan *client),
 		leave:   make(chan *client),
 		clients: make(map[*client]bool),
+		tracer:  trace.Off(),
 	}
 }
 
@@ -48,17 +54,21 @@ func (r *room) run() {
 		// nếu nhận được kết quả từ channel join thì thêm client đó vào danh sách clients
 		case client := <-r.join:
 			r.clients[client] = true
+			r.tracer.Trace("New client joined")
 		// nếu nhận được kết quả từ channel leave thì xóa client đó khỏi danh sách
 		// và channel client đó sẽ được close
 		case client := <-r.leave:
 			delete(r.clients, client)
 			close(client.send)
+			r.tracer.Trace("Client left")
 		// nếu nhận được kết quả từ channle forward thì kết quả được lưu vào msg
 		// msg sau đó sẽ được gửi đến toàn bộ client thông qua channel send của client
 		// write method của client đó sẽ lấy thông tin đó và gửi nó xuống socket tới browser
 		case msg := <-r.forward:
+			r.tracer.Trace("Message received: ", string(msg))
 			for client := range r.clients {
 				client.send <- msg
+				r.tracer.Trace(" -- sent to client")
 			}
 		}
 	}
