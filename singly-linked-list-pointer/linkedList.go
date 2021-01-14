@@ -144,6 +144,7 @@ func (l *LinkedList) getAtPos(pos int) (*Node, error) {
 	return ptr, nil
 }
 
+// display our linkedlist
 func (l *LinkedList) display() {
 	var temp *Node
 	temp = l.head
@@ -153,8 +154,9 @@ func (l *LinkedList) display() {
 	}
 
 }
+
 func main() {
-	// var l *LinkedList
+	var l *LinkedList
 	l := newLinkedList()
 	fmt.Println("=== insert 5 data===")
 	n := 0
